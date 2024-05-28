@@ -1,8 +1,12 @@
 from datetime import date
-from sqlalchemy import Column, Computed, Date, ForeignKey, Integer
+
+from sqlalchemy import Computed, Date, ForeignKey
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 
 from app.database import Base
+
+from app.hotels.rooms.models import Rooms
+from app.users.models import Users
 
 
 # Модель написана в соответствии с современным стилем Алхимии (версии 2.x)
@@ -18,8 +22,8 @@ class Bookings(Base):
     total_cost: Mapped[int] = mapped_column(Computed("(date_to - date_from) * price"))
     total_days: Mapped[int] = mapped_column(Computed("date_to - date_from"))
 
-    user: Mapped["Users"] = relationship(back_populates="bookings")
-    room: Mapped["Rooms"] = relationship(back_populates="bookings")
+    # user: Mapped["Users"] = relationship(back_populates="bookings")
+    # room: Mapped["Rooms"] = relationship(back_populates="bookings")
 
     def __str__(self):
         return f"Бронь #{self.id}"

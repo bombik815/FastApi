@@ -1,11 +1,11 @@
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship, Mapped, mapped_column
 from typing import Optional
+
+from sqlalchemy import JSON, ForeignKey
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from app.database import Base
 
 
-# Модель написана в соответствии с современным стилем Алхимии (версии 2.x)
 class Rooms(Base):
     __tablename__ = "rooms"
 
@@ -18,8 +18,8 @@ class Rooms(Base):
     quantity: Mapped[int]
     image_id: Mapped[int]
 
-    hotel: Mapped["Hotels"] = relationship(back_populates="rooms")
-    bookings: Mapped[list["Bookings"]] = relationship(back_populates="room")
+    # hotel: Mapped["Hotels"] = relationship(back_populates="rooms")
+    # bookings: Mapped[list["Bookings"]] = relationship(back_populates="room")
 
     def __str__(self):
         return f"Номер {self.name}"
