@@ -8,6 +8,7 @@ from app.booking.router import router as router_bookings
 
 app = FastAPI()
 
+# Включение основных роутеров
 app.include_router(router_bookings)
 
 
