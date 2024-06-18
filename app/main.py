@@ -5,10 +5,12 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from pydantic import BaseModel
 
 from app.booking.router import router as router_bookings
+from app.users.router import router as router_users
 
 app = FastAPI()
 
 # Включение основных роутеров
+app.include_router(router_users)
 app.include_router(router_bookings)
 
 
@@ -41,17 +43,6 @@ async def get_hotels(location: str,
         "stars": 5,
     }, ]
     return hotels
-
-
-# class SBooking(BaseModel):
-#     room_id: int
-#     date_from: date
-#     date_to: date
-#
-#
-# @app.post("/booking")
-# async def book_booking(booking: SBooking):
-#     return {"message": "booking successful"}
 
 
 # Код для случая, если вы хотите запускать uvicorn через python main.py
