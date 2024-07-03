@@ -13,11 +13,11 @@ class BookingDAO(BaseDAO):
 
     @classmethod
     async def add(
-            cls,
-            user_id: int,
-            room_id: int,
-            date_from: date,
-            date_to: date,
+        cls,
+        user_id: int,
+        room_id: int,
+        date_from: date,
+        date_to: date,
     ):
         """"
                WITH booked_rooms AS (
@@ -27,7 +27,7 @@ class BookingDAO(BaseDAO):
                        (date_from <= '2023-05-15' AND date_to > '2023-05-15')
                )
              
-        """""
+        """ ""
         async with async_session_maker() as session:
             booked_rooms = (
                 select(Bookings)
@@ -54,14 +54,18 @@ class BookingDAO(BaseDAO):
                LEFT JOIN booked_rooms ON booked_rooms.room_id = rooms.id
                WHERE rooms.id = 1
                GROUP BY rooms.quantity, booked_rooms.room_id
-            """""
+            """ ""
 
-            get_rooms_left = select(
-                (Rooms.quantity - func.count(booked_rooms.c.room_id)).label("rooms_left")
-            ).select_from(Rooms).join(
-                booked_rooms, booked_rooms.c.room_id == Rooms.id, isouter=True
-            ).where(Rooms.id == room_id).group_by(
-                Rooms.quantity, booked_rooms.c.room_id
+            get_rooms_left = (
+                select(
+                    (Rooms.quantity - func.count(booked_rooms.c.room_id)).label(
+                        "rooms_left"
+                    )
+                )
+                .select_from(Rooms)
+                .join(booked_rooms, booked_rooms.c.room_id == Rooms.id, isouter=True)
+                .where(Rooms.id == room_id)
+                .group_by(Rooms.quantity, booked_rooms.c.room_id)
             )
 
             # Рекомендую выводить SQL запрос в консоль для сверки
