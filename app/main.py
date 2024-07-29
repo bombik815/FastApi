@@ -1,21 +1,58 @@
 from datetime import date
 
 from fastapi import FastAPI, Query
+from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.booking.router import router as router_bookings
-from app.users.router import router as router_users
+from app.images.router import router_images
+from app.users.router import router_users, router_auth
 from app.hotels.router import router as router_hotels
 from app.hotels.rooms.router import router as router_rooms
+from app.pages.router import router as router_pages
 
 app = FastAPI()
 
+"""
+Этот код использует метод mount объекта приложения FastAPI (app)
+ для монтирования директории статических файлов к маршруту "/static".
+"""
+app.mount("/static", StaticFiles(directory="app/static"), "static")
+
 # Включение основных роутеров
+app.include_router(router_auth)
 app.include_router(router_users)
+
 app.include_router(router_bookings)
 app.include_router(router_hotels)
 app.include_router(router_rooms)
+
+app.include_router(router_pages)
+
+app.include_router(router_images)
+
+
+# Подключение CORS, чтобы запросы к API могли приходить из браузера
+origins = [
+    # 3000 - порт, на котором работает фронтенд на React.js
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,  # Включаем возможность передачи cookie
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
+    allow_headers=[
+        "Content-Type",
+        "Set-Cookie",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Origin",
+        "Authorization",
+    ],
+)
 
 
 @app.get("/docs", include_in_schema=False)

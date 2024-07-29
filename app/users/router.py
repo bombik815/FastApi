@@ -7,13 +7,18 @@ from app.users.dependencies import get_current_user
 from app.users.models import Users
 from app.users.schemas import SUserAuth
 
-router = APIRouter(
+router_auth = APIRouter(
     prefix="/auth",
-    tags=["Auth & Пользователи"],
+    tags=["Authentication"],
+)
+
+router_users = APIRouter(
+    prefix="/users",
+    tags=["Пользователи"],
 )
 
 
-@router.post("/register")  # ручка для регистрации юзера
+@router_auth.post("/register")  # ручка для регистрации юзера
 async def register_user(user_data: SUserAuth):
     existing_user = await UsersDAO.find_one_or_none(email=user_data.email)
     if existing_user:
@@ -24,7 +29,7 @@ async def register_user(user_data: SUserAuth):
     await UsersDAO.add(email=user_data.email, hashed_password=hashed_password)
 
 
-@router.post("/login")  # ручка для входа юзера в систему
+@router_auth.post("/login")  # ручка для входа юзера в систему
 async def login_user(response: Response, user_data: SUserAuth):
     user = await authenticate_user(user_data.email, user_data.password)
     if not user:
@@ -34,11 +39,11 @@ async def login_user(response: Response, user_data: SUserAuth):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post("/logout")  # ручка для выхода юзера из систему
+@router_auth.post("/logout")  # ручка для выхода юзера из систему
 async def logout_user(response: Response):
     response.delete_cookie("access_token")
 
 
-@router.get("/me")
+@router_users.get("/me")
 async def read_users_me(current_user: Users = Depends(get_current_user)):
     return current_user
