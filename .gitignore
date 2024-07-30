@@ -214,3 +214,6 @@ venv.bak/
 .mypy_cache/
 
 .idea/*
+
+#Redis service
+/Redis-x64-5.0.14.1/
