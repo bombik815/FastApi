@@ -1,4 +1,5 @@
 from datetime import date
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Query
 from fastapi.staticfiles import StaticFiles
@@ -6,6 +7,11 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi_cache import FastAPICache
+from redis import asyncio as aioredis
+from fastapi_cache.backends.redis import RedisBackend
+
+from app.config import settings
 from app.booking.router import router as router_bookings
 from app.images.router import router_images
 from app.users.router import router_users, router_auth
@@ -13,7 +19,23 @@ from app.hotels.router import router as router_hotels
 from app.hotels.rooms.router import router as router_rooms
 from app.pages.router import router as router_pages
 
-app = FastAPI()
+
+# Замена устаревших @app.on_event("startup") и @app.on_event("shutdown")
+# в единую функцию lifespan
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # при запуске
+    redis = aioredis.from_url(
+        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
+        encoding="utf8",
+        decode_responses=True,
+    )
+    FastAPICache.init(RedisBackend(redis), prefix="cache")
+    yield
+    # при выключении
+
+
+app = FastAPI(lifespan=lifespan)
 
 """
 Этот код использует метод mount объекта приложения FastAPI (app)

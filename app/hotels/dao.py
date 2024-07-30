@@ -4,13 +4,13 @@ from sqlalchemy import and_, func, or_, select
 
 from app.booking.models import Bookings
 from app.dao.base import BaseDAO
-from app.database import async_session_maker, engine
+from app.database import async_session_maker
 from app.hotels.models import Hotels
 from app.hotels.rooms.models import Rooms
 
 """
    Класс для работы с отелями в базе данных.
-   """
+"""
 
 
 class HotelDAO(BaseDAO):
