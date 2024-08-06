@@ -14,3 +14,9 @@ class SBooking(BaseModel):
 
     # orm_mode поменял название во 2 версии Pydantic
     model_config = ConfigDict(from_attributes=True)
+
+
+class SNewBooking(BaseModel):
+    room_id: int
+    date_from: date
+    date_to: date
