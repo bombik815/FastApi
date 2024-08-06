@@ -216,6 +216,8 @@ venv.bak/
 .idea/*
 
 #Redis service
+.Redis-x64-5.0.14.1/*
+
 Redis-x64-5.0.14.1/
 Redis-x64-5.0.14.1/*.rdb
 Redis-x64-5.0.14.1/*.dll

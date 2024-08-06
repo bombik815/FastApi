@@ -1,4 +1,4 @@
-# Запуск аfastApi приложенеи uvicorn
+# Запуск fastApi приложенеи uvicorn
 
 > uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
